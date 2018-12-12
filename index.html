@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Test</title>
+        <style>
+
+            #scoreboard {
+                font-size: 60px;
+                font-weight: bold;
+            }
+
+            .btn {
+                display: inline-block;
+                padding: 15px 25px;
+                font-size: 24px;
+                cursor: pointer;
+                text-align: center;
+                text-decoration: none;
+                outline: none;
+                color: #fff;
+                background-color: #0080b9;
+                border: none;
+                border-radius: 15px;
+                box-shadow: 0 9px #999;
+                margin: 10px 0px 20px;
+                min-width: 150px;
+            }
+
+            .btn:hover {
+                background-color: #015479;
+            }
+
+            .btn:active {
+                background-color: #015479;
+                box-shadow: 0 5px #666;
+                transform: translateY(4px);
+            }
+
+            .hide {
+                display: none;
+            }
+
+        </style>
+    </head>
+    <body>
+
+        <h1>Test</h1>
+
+        <div id="scoreboard">00:00:00</div>
+        <button id="btn-start" class="btn">Start</button>
+        <button id="btn-pause" class="hide btn">Pause</button>
+        <button id="btn-clear" class="btn">Clear</button>
+
+        <script type="text/javascript">
+
+            // Define Elems
+            let scoreboard = document.getElementById('scoreboard'),
+                btnStart = document.getElementById('btn-start'),
+                btnPause = document.getElementById('btn-pause'),
+                btnClear = document.getElementById('btn-clear'),
+                milliseconds = 0,
+                seconds = 0,
+                minutes = 0,
+                iteration;
+
+            // Stop Watch Logic
+            function stopWatchLogic() {
+                milliseconds++;
+                if (milliseconds >= 100) {
+                    milliseconds = 0;
+                    seconds++;
+                    if (seconds >= 60) {
+                        seconds = 0;
+                        minutes++;
+                    }
+                }
+
+                scoreboard.textContent = (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") +
+                    ":" + (seconds ? (seconds > 9 ? seconds : "0" + seconds) : "00") +
+                    ":" + (milliseconds > 9 ? milliseconds : "0" + milliseconds);
+
+                timer();
+            }
+
+            // Timer
+            function timer() {
+                iteration = setTimeout(stopWatchLogic, 10);
+            }
+
+            // Click Start
+            btnStart.addEventListener('click', function() {
+                this.setAttribute('style', 'display: none;');
+                btnPause.setAttribute('style', 'display: inline-block;');
+                timer();
+            })
+
+            // Click Pause
+            btnPause.addEventListener('click', function() {
+                clearTimeout(iteration);
+            })
+
+            // Click Clear
+            btnClear.addEventListener('click', function() {
+                clearTimeout(iteration);
+
+                scoreboard.textContent = "00:00:00";
+                milliseconds = 0; seconds = 0; minutes = 0;
+
+                btnPause.setAttribute('style', 'display: none;');
+                btnStart.setAttribute('style', 'display: inline-block;');
+            })
+
+        </script>
+
+    </body>
+</html>
