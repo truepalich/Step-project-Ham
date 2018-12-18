@@ -58,4 +58,11 @@ $(document).ready(function(){
     }
     // Custom Tabs End //
 
+
+    // Current Year in Footer Start //
+    let fullDate = new Date();
+    let currYear = document.getElementById('js-current-year');
+    currYear.innerText = fullDate.getFullYear();
+    // Current Year in Footer End //
+
 });

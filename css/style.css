@@ -106,12 +106,58 @@ a:hover {
 /* Header styles */
 header {
     background: url("../img/header_bg.png") repeat;
-    height: 120px;
-    position: sticky;
+    /*height: 120px;*/
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     z-index: 3;
+}
+header .wrap {
+    position: relative;
+}
+header .menu {
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+    display: flex;
+    justify-content: flex-end;
+}
+header .menu li {
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+    height: 120px;
+    position: relative;
+}
+header .menu li::after {
+    width: 100%;
+    height: 2px;
+    content: "";
+    position: absolute;
+    left: 0px;
+    bottom: -2px;
+    background-color: #18cfab;
+    display: none;
+}
+header .menu li a {
+    text-transform: uppercase;
+    color: #b8b8b8;
+    font-size: 13px;
+    font-weight: bold;
+}
+header .menu li a:hover,
+header .menu li.active a {
+    color: #18cfab;
+}
+header .menu li.active::after {
+    display: block;
+}
+header .logo {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    margin-top: -35px;
 }
 /* Header styles */
 
