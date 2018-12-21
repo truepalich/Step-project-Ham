@@ -48,7 +48,7 @@ $(document).ready(function(){
         for (let content of serviceContents) {
             content.classList.remove('active');
             content.classList.add('not-active');
-        }
+        };
     }
     // Custom Tabs End //
 
@@ -57,13 +57,15 @@ $(document).ready(function(){
 
     // Initial statement for tabs and work contents
     const TAB_ALL_WORK = 'all';
-    const LIMIT_WORK_ITEMS = 4;
+    const LIMIT_WORK_ITEMS = 12;
 
     let workTabs = document.getElementById('js-work-tabs-list').getElementsByTagName("li");
     let workContents = document.getElementsByClassName('js-item-work');
     let btnLoad = document.getElementById('js-btn-load-more');
+    let preloader = document.getElementById('js-preloader');
 
     workTabs[0].classList.add('active');
+    preloader.classList.add('hide');
 
     let visibleWorks = [];
     for (let elem of workContents) {
@@ -76,22 +78,25 @@ $(document).ready(function(){
     }
 
     if (workContents.length > LIMIT_WORK_ITEMS) {
-        btnLoad.style.display = 'inline-block';
+        btnLoad.classList.remove('hide');
+        btnLoad.classList.add('show');
     } else {
-        btnLoad.style.display = 'none';
+        btnLoad.classList.remove('show');
+        btnLoad.classList.add('hide');
     }
 
+    sessionStorage.setItem('activeTab', TAB_ALL_WORK);
+    sessionStorage.setItem('wasShownWorks', 'no');
+
     // Tab click
-    let j = 0;
     for (let tab of workTabs) {
         tab.addEventListener('click', function() {
             deleteActiveTabs(workTabs);
             this.classList.add('active');
             let fw = this.getAttribute('data-tab-work');
+            sessionStorage.setItem('activeTab', fw);
             filterWorks(fw);
-
         })
-        j++;
     };
 
     // Filter logic
@@ -99,73 +104,63 @@ $(document).ready(function(){
         let collectionOfWorks = document.getElementsByClassName('js-item-work');
 
         let visibleWorks = [];
-        let notVisibleWorks = [];
+        let allWorks = [];
 
         for (let elem of collectionOfWorks) {
-
             elem.classList.remove('not-active');
             elem.classList.remove('active');
 
             if (param === TAB_ALL_WORK || elem.getAttribute('data-work') === param) {
                 if (visibleWorks.length < LIMIT_WORK_ITEMS) {
                     visibleWorks.push(elem);
-                    // notVisibleWorks.push(elem);
                     elem.classList.add('active');
                 } else {
-                    elem.classList.add('not-active');
+                    if (sessionStorage.getItem('wasShownWorks') != 'yes') {
+                        elem.classList.add('not-active');
+                    } else {
+                        elem.classList.remove('not-active');
+                        elem.classList.add('active');
+                    }
                 }
+                allWorks.push(elem);
             } else {
                 elem.classList.add('not-active');
                 elem.classList.remove('active');
             }
-
-
-            //
-            // if (param === TAB_ALL_WORK) {
-            //
-            //     if (visibleWorks.length <= LIMIT_WORK_ITEMS - 1) {
-            //         visibleWorks.push(elem);
-            //         elem.classList.add('active');
-            //     } else {
-            //         elem.classList.add('not-active');
-            //     }
-            //
-            //     // elem.classList.remove('not-active');
-            //     // elem.classList.add('active');
-            // } else if (elem.getAttribute('data-work') === param) {
-            //
-            //     if (visibleWorks.length <= LIMIT_WORK_ITEMS - 1) {
-            //         visibleWorks.push(elem);
-            //         elem.classList.add('active');
-            //     } else {
-            //         elem.classList.add('not-active');
-            //     }
-            //
-            //     // elem.classList.remove('not-active');
-            //     // elem.classList.add('active');
-            // } else {
-            //     elem.classList.add('not-active');
-            //     elem.classList.remove('active');
-            //     // elem.style.display = 'none';
-            // }
-
-
         }
 
-        console.log(visibleWorks.length);
-
-
-        if (visibleWorks.length > LIMIT_WORK_ITEMS) {
-            btnLoad.style.display = 'inline-block';
-            console.log('block');
-        } else {
-            btnLoad.style.display = 'none';
-            console.log('none');
+        if (sessionStorage.getItem('wasShownWorks') != 'yes') {
+            if (allWorks.length > LIMIT_WORK_ITEMS) {
+                btnLoad.classList.remove('hide');
+                btnLoad.classList.add('show');
+            } else {
+                btnLoad.classList.remove('show');
+                btnLoad.classList.add('hide');
+            }
         }
-
     }
 
+    btnLoad.addEventListener('click', function() {
+        this.classList.remove('show');
+        this.classList.add('hide');
+        preloader.classList.add('show');
 
+        setTimeout(function() {
+            preloader.classList.remove('show');
+            preloader.classList.add('hide');
+
+            let activeTab = sessionStorage.getItem('activeTab');
+            let notActiveWorks = document.querySelectorAll('.js-item-work.not-active');
+
+            for (let elem of notActiveWorks) {
+                if (elem.dataset.work == activeTab || activeTab == TAB_ALL_WORK) {
+                    elem.classList.remove('not-active');
+                    elem.classList.add('active');
+                }
+            }
+            sessionStorage.setItem('wasShownWorks', 'yes');
+        }, 2000);
+    });
     // Amazing Work Logic End //
 
 
